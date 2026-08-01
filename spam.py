@@ -3,9 +3,9 @@ from telethon import events
 
 from client import client, PREFIX, register
 
-MAX_SPAM = 20
+MAX_SPAM = 150
 
-register(f"{PREFIX}spam <teks> <jumlah>", f"Kirim teks berulang (maks {MAX_SPAM}x, ada delay)", "Fun")
+register(f"{PREFIX}spam <teks> <jumlah>", f"Kirim teks berulang (maks {MAX_SPAM}x)")
 
 
 @client.on(events.NewMessage(outgoing=True, pattern=rf"^\{PREFIX}spam (.+) (\d+)$"))
@@ -14,7 +14,7 @@ async def spam_handler(event):
     count = int(event.pattern_match.group(2))
 
     if count > MAX_SPAM:
-        await event.edit(f"⚠️ Maks {MAX_SPAM}x sekali jalan (biar akun aman dari flood limit Telegram).")
+        await event.edit(f"⚠️ Maks {MAX_SPAM}x ")
         return
 
     if count < 1:
