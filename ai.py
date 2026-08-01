@@ -19,6 +19,4 @@ def _ask_ai_sync(prompt: str) -> str:
 
 
 async def ask_ai(prompt: str) -> str:
-    """Groq's SDK is sync, so run it in a thread to avoid blocking the event loop."""
     return await asyncio.to_thread(_ask_ai_sync, prompt)
-
