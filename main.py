@@ -12,6 +12,13 @@ import tts
 import remind
 import media
 import spam
+import away
+import weather
+import shorturl
+import qr
+import purge
+import type_cmd
+import wiki
 import menu
 
 logging.basicConfig(level=logging.INFO)
