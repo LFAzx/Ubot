@@ -21,8 +21,15 @@ import type_cmd
 import wiki
 import menu
 
+from telethon import events
+
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("userbot")
+
+
+@client.on(events.NewMessage())
+async def debug_all_handler(event):
+    log.info(f"[DEBUG] out={event.out} text={event.raw_text!r} chat_id={event.chat_id}")
 
 
 async def main():
