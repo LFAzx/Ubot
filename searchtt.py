@@ -1,4 +1,5 @@
 import os
+import json
 import asyncio
 from urllib.parse import quote_plus
 from playwright.async_api import async_playwright
@@ -11,15 +12,47 @@ register(f"{PREFIX}searchtt <kata kunci> <jumlah>", "Cari & download video TikTo
 
 MAX_RESULTS = 5
 
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+)
+
+# Optional: put exported TikTok cookies (Cookie-Editor JSON export, Playwright/Selenium format)
+# at this path to make the headless browser act as a logged-in session.
+COOKIES_PATH = "tiktok_cookies.json"
+
 
 async def _search_tiktok_urls(query, count):
     urls = []
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page()
+        context = await browser.new_context(
+            user_agent=USER_AGENT,
+            viewport={"width": 1280, "height": 800},
+            locale="en-US",
+            timezone_id="Asia/Jakarta",
+        )
+
+        if os.path.exists(COOKIES_PATH):
+            try:
+                with open(COOKIES_PATH, "r") as f:
+                    cookies = json.load(f)
+                await context.add_cookies(cookies)
+            except Exception:
+                pass
+
+        page = await context.new_page()
         try:
             await page.goto(f"https://www.tiktok.com/search/video?q={quote_plus(query)}", timeout=30000)
-            await page.wait_for_timeout(4000)
+            await page.wait_for_timeout(7000)
+
+            try:
+                accept_btn = await page.query_selector("button:has-text('Accept')")
+                if accept_btn:
+                    await accept_btn.click()
+                    await page.wait_for_timeout(1000)
+            except Exception:
+                pass
 
             anchors = await page.query_selector_all("a[href*='/video/']")
             for a in anchors:
