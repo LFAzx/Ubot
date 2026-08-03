@@ -25,7 +25,6 @@ import textgen
 import hash_cmd
 import base64_cmd
 import quote_cmd
-import meme
 import status_cmd
 import uptime_cmd
 import typefake
