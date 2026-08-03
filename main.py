@@ -30,6 +30,14 @@ import uptime_cmd
 import typefake
 import currency
 import searchpin
+import getpp
+import userinfo
+import ocr
+import qrread
+import ip_cmd
+import caesar
+import searchyt
+import searchtt
 import menu
 
 logging.basicConfig(level=logging.INFO)
