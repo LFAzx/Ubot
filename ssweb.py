@@ -5,13 +5,13 @@ from telethon import events
 
 from client import client, PREFIX, register
 
-register(f"{PREFIX}ssweb <link>", "Screenshot website", "Utility")
+register(f"{PREFIX}ssweb <link>", "Screenshot website (full page)", "Utility")
 
 
 def _get_screenshot_bytes(url):
     resp = requests.get(
         "https://api.microlink.io",
-        params={"url": url, "screenshot": "true", "meta": "false"},
+        params={"url": url, "screenshot": "true", "meta": "false", "screenshot.fullPage": "true"},
         timeout=25,
     )
     resp.raise_for_status()
