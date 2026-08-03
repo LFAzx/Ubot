@@ -29,6 +29,8 @@ import meme
 import status_cmd
 import uptime_cmd
 import typefake
+import currency
+import searchpin
 import menu
 
 logging.basicConfig(level=logging.INFO)
