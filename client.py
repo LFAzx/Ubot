@@ -1,4 +1,5 @@
 import os
+import time
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 
@@ -9,6 +10,8 @@ SESSION_STRING = os.environ["SESSION_STRING"]
 PREFIX = os.environ.get("PREFIX", ".")
 
 client = TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH)
+
+START_TIME = time.time()
 
 COMMANDS = []
 

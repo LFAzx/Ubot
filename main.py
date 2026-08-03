@@ -19,17 +19,20 @@ import qr
 import purge
 import type_cmd
 import wiki
+import ssweb
+import whois_cmd
+import textgen
+import hash_cmd
+import base64_cmd
+import quote_cmd
+import meme
+import status_cmd
+import uptime_cmd
+import typefake
 import menu
-
-from telethon import events
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("userbot")
-
-
-@client.on(events.NewMessage())
-async def debug_all_handler(event):
-    log.info(f"[DEBUG] out={event.out} text={event.raw_text!r} chat_id={event.chat_id}")
 
 
 async def main():
