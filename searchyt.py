@@ -17,6 +17,7 @@ def _search_youtube(query, count, mode):
         "quiet": True,
         "no_warnings": True,
         "noplaylist": True,
+        "ignoreerrors": True,
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(f"ytsearch{fetch_count}:{query}", download=False)

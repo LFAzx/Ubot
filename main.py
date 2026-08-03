@@ -37,7 +37,6 @@ import qrread
 import ip_cmd
 import caesar
 import searchyt
-import searchtt
 import menu
 
 logging.basicConfig(level=logging.INFO)
