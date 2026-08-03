@@ -1,5 +1,4 @@
 import os
-import json
 import asyncio
 from urllib.parse import quote_plus
 from playwright.async_api import async_playwright
@@ -17,9 +16,39 @@ USER_AGENT = (
     "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 )
 
-# Optional: put exported TikTok cookies (Cookie-Editor JSON export, Playwright/Selenium format)
-# at this path to make the headless browser act as a logged-in session.
-COOKIES_PATH = "tiktok_cookies.json"
+
+def _parse_netscape_cookies(text):
+    cookies = []
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split("\t")
+        if len(parts) != 7:
+            continue
+        domain, _flag, path_, secure, expiration, name, value = parts
+        try:
+            expires = float(expiration) if expiration and expiration != "0" else -1
+        except ValueError:
+            expires = -1
+        cookies.append({
+            "name": name,
+            "value": value,
+            "domain": domain,
+            "path": path_,
+            "expires": expires,
+            "httpOnly": False,
+            "secure": secure.upper() == "TRUE",
+            "sameSite": "Lax",
+        })
+    return cookies
+
+
+def _load_cookies():
+    raw = os.environ.get("TIKTOK_COOKIES")
+    if not raw:
+        return None
+    return _parse_netscape_cookies(raw)
 
 
 async def _search_tiktok_urls(query, count):
@@ -33,10 +62,9 @@ async def _search_tiktok_urls(query, count):
             timezone_id="Asia/Jakarta",
         )
 
-        if os.path.exists(COOKIES_PATH):
+        cookies = _load_cookies()
+        if cookies:
             try:
-                with open(COOKIES_PATH, "r") as f:
-                    cookies = json.load(f)
                 await context.add_cookies(cookies)
             except Exception:
                 pass
