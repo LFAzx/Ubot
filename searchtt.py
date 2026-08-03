@@ -1,0 +1,133 @@
+import os
+import asyncio
+from urllib.parse import quote_plus
+from playwright.async_api import async_playwright
+from telethon import events
+
+from client import client, PREFIX, register
+from media import _download
+
+register(f"{PREFIX}searchtt <kata kunci> <jumlah>", "Cari & download video TikTok (browser headless)", "Media")
+
+MAX_RESULTS = 5
+
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+)
+
+
+def _parse_netscape_cookies(text):
+    cookies = []
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split("\t")
+        if len(parts) != 7:
+            continue
+        domain, _flag, path_, secure, expiration, name, value = parts
+        try:
+            expires = float(expiration) if expiration and expiration != "0" else -1
+        except ValueError:
+            expires = -1
+        cookies.append({
+            "name": name,
+            "value": value,
+            "domain": domain,
+            "path": path_,
+            "expires": expires,
+            "httpOnly": False,
+            "secure": secure.upper() == "TRUE",
+            "sameSite": "Lax",
+        })
+    return cookies
+
+
+def _load_cookies():
+    raw = os.environ.get("TIKTOK_COOKIES")
+    if not raw:
+        return None
+    return _parse_netscape_cookies(raw)
+
+
+async def _search_tiktok_urls(query, count):
+    urls = []
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        context = await browser.new_context(
+            user_agent=USER_AGENT,
+            viewport={"width": 1280, "height": 800},
+            locale="en-US",
+            timezone_id="Asia/Jakarta",
+        )
+
+        cookies = _load_cookies()
+        if cookies:
+            try:
+                await context.add_cookies(cookies)
+            except Exception:
+                pass
+
+        page = await context.new_page()
+        try:
+            await page.goto(f"https://www.tiktok.com/search/video?q={quote_plus(query)}", timeout=30000)
+            await page.wait_for_timeout(7000)
+
+            try:
+                accept_btn = await page.query_selector("button:has-text('Accept')")
+                if accept_btn:
+                    await accept_btn.click()
+                    await page.wait_for_timeout(1000)
+            except Exception:
+                pass
+
+            anchors = await page.query_selector_all("a[href*='/video/']")
+            for a in anchors:
+                href = await a.get_attribute("href")
+                if href and href not in urls:
+                    urls.append(href)
+                if len(urls) >= count:
+                    break
+        finally:
+            await browser.close()
+    return urls[:count]
+
+
+@client.on(events.NewMessage(outgoing=True, pattern=rf"^\{PREFIX}searchtt (.+) (\d+)$"))
+async def searchtt_handler(event):
+    query = event.pattern_match.group(1)
+    count = min(int(event.pattern_match.group(2)), MAX_RESULTS)
+
+    await event.edit(f"🔎 Mencari TikTok: {query}...")
+    try:
+        urls = await _search_tiktok_urls(query, count)
+        if not urls:
+            await event.edit("❌ Gak nemu hasil (TikTok mungkin lagi block bot detection).")
+            return
+
+        await event.edit(f"⬇️ Ketemu {len(urls)}, mulai download...")
+
+        uploaders = []
+        filepaths = []
+        for url in urls:
+            try:
+                filepath, title = await asyncio.to_thread(_download, url, False)
+                filepaths.append(filepath)
+                uploaders.append(url.split("@")[1].split("/")[0] if "@" in url else "?")
+            except Exception:
+                continue
+
+        if not filepaths:
+            await event.edit("❌ Gagal download semua hasil.")
+            return
+
+        await event.delete()
+        for fp in filepaths:
+            await client.send_file(event.chat_id, fp)
+            os.remove(fp)
+
+        uploader_list = "\n".join(f"- @{u}" for u in uploaders)
+        await client.send_message(event.chat_id, f"📃 **List user:**\n{uploader_list}")
+    except Exception as e:
+        await event.edit(f"❌ Error: {e}")
