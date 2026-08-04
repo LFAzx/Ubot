@@ -37,6 +37,10 @@ import qrread
 import ip_cmd
 import caesar
 import searchyt
+import searchtt
+import crypto_cmd
+import anime
+import lastseen
 import menu
 
 logging.basicConfig(level=logging.INFO)
