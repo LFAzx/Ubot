@@ -11,5 +11,3 @@ qrcode
 pinscrape
 pytesseract
 pyzbar
-playwright
-playwright
