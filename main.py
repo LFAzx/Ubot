@@ -41,6 +41,7 @@ import searchtt
 import crypto_cmd
 import anime
 import lastseen
+import lens
 import menu
 
 logging.basicConfig(level=logging.INFO)
