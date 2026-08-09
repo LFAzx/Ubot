@@ -6,12 +6,12 @@ from pinscrape import Pinterest
 
 from client import client, PREFIX, register
 
-register(f"{PREFIX}searchpin <teks>", "Cari & download foto dari Pinterest", "Media")
+register(f"{PREFIX}searchpin <teks> <jumlah>", "Cari & download foto dari Pinterest", "Media")
 
-MAX_RESULTS = 5
+MAX_RESULTS = 10
 
 
-def _search_and_download(keyword, count=MAX_RESULTS):
+def _search_and_download(keyword, count):
     p = Pinterest()
     urls = p.search(keyword, count)
 
@@ -29,12 +29,14 @@ def _search_and_download(keyword, count=MAX_RESULTS):
     return files
 
 
-@client.on(events.NewMessage(outgoing=True, pattern=rf"^\{PREFIX}searchpin (.+)$"))
+@client.on(events.NewMessage(outgoing=True, pattern=rf"^\{PREFIX}searchpin (.+) (\d+)$"))
 async def searchpin_handler(event):
     keyword = event.pattern_match.group(1)
+    count = min(int(event.pattern_match.group(2)), MAX_RESULTS)
+
     await event.edit("📌 Mencari & download dari Pinterest...")
     try:
-        files = await asyncio.to_thread(_search_and_download, keyword)
+        files = await asyncio.to_thread(_search_and_download, keyword, count)
 
         if not files:
             await event.edit("❌ Gak nemu atau gagal download hasil pencarian.")

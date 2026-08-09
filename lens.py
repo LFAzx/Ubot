@@ -16,7 +16,7 @@ def _extract_yandex_img_url(href):
     qs = parse_qs(parsed.query)
     if "img_url" in qs:
         return unquote(qs["img_url"][0])
-    return href
+    return None
 
 
 async def _search_yandex(image_path, count):
@@ -40,16 +40,19 @@ async def _search_yandex(image_path, count):
                 return results
 
             await file_input.set_input_files(image_path)
-            await page.wait_for_timeout(6000)
+            await page.wait_for_timeout(7000)
+
+            await page.mouse.wheel(0, 2000)
+            await page.wait_for_timeout(2000)
 
             anchors = await page.query_selector_all("a[href*='cbir_id']")
             seen = set()
             for a in anchors:
                 href = await a.get_attribute("href")
-                if not href:
+                if not href or "passport.yandex" in href:
                     continue
                 img_url = _extract_yandex_img_url(href)
-                if img_url not in seen:
+                if img_url and img_url not in seen:
                     seen.add(img_url)
                     results.append(img_url)
                 if len(results) >= count:
