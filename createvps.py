@@ -4,7 +4,7 @@ from telethon import events
 
 from client import client, PREFIX, register
 
-register(f"{PREFIX}createvps <username> <password> <domain> <ram-ssd>", "VPS creation gimmick (fake, hiburan doang)", "Fun")
+register(f"{PREFIX}createvps <username> <password> <domain> <ram-ssd>", "Fun")
 
 FAKE_STEPS = [
     "Allocating resources...",
