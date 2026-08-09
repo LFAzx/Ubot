@@ -42,6 +42,11 @@ import crypto_cmd
 import anime
 import lastseen
 import lens
+import expand
+import pastebin_cmd
+import timezone_cmd
+import ship
+import rate
 import menu
 
 logging.basicConfig(level=logging.INFO)

@@ -11,7 +11,7 @@ async def menu_handler(event):
     for c in COMMANDS:
         categories.setdefault(c["category"], []).append(c)
 
-    lines = ["**📜 SilentCyber Userbot — Daftar Perintah**\n"]
+    lines = ["**📜 Rezxploit Userbot — Daftar Perintah**\n"]
     for category, cmds in categories.items():
         lines.append(f"**{category}**")
         for c in cmds:

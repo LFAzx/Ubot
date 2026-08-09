@@ -12,12 +12,14 @@ MAX_RESULTS = 5
 
 
 def _search_youtube(query, count, mode):
-    fetch_count = max(count * 3, count + 5)
+    multiplier = 6 if mode == "shorts" else 3
+    fetch_count = max(count * multiplier, count + 5)
+
     ydl_opts = {
         "quiet": True,
         "no_warnings": True,
-        "noplaylist": True,
         "ignoreerrors": True,
+        "extract_flat": False,
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(f"ytsearch{fetch_count}:{query}", download=False)
