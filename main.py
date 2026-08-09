@@ -47,6 +47,19 @@ import pastebin_cmd
 import timezone_cmd
 import ship
 import rate
+import acronym
+import holiday
+import ping2
+import slugify_cmd
+import wordcount
+import dadjoke
+import trivia
+import stopwatch
+import ytmp3
+import lenspin
+import createvps
+import freeproxy
+import upscale
 import menu
 
 logging.basicConfig(level=logging.INFO)
