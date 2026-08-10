@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 from client import client
+from webserver import start_webserver
 
 import ai_features
 import utility
@@ -37,11 +38,10 @@ import qrread
 import ip_cmd
 import caesar
 import searchyt
-import searchtt
-import crypto_cmd
-import anime
-import lastseen
 import lens
+import anime
+import crypto_cmd
+import lastseen
 import expand
 import pastebin_cmd
 import timezone_cmd
@@ -59,6 +59,12 @@ import ytmp3
 import createvps
 import freeproxy
 import upscale
+import drive_cmd
+import createpanel
+import infousertt
+import infouseryt
+import infonewscyber
+import searchnews
 import menu
 
 logging.basicConfig(level=logging.INFO)
@@ -66,6 +72,7 @@ log = logging.getLogger("userbot")
 
 
 async def main():
+    await start_webserver()
     await client.start()
     me = await client.get_me()
     log.info(f"Userbot started as {me.first_name} (@{me.username})")

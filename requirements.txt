@@ -12,3 +12,7 @@ pinscrape
 pytesseract
 pyzbar
 playwright
+google-auth
+google-auth-oauthlib
+google-api-python-client
+aiohttp
