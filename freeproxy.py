@@ -5,13 +5,24 @@ from telethon import events
 
 from client import client, PREFIX, register
 
-register(f"{PREFIX}freeproxy <jumlah> <text|file>", "List proxy gratisan (HTTP)", "Utility")
+register(f"{PREFIX}freeproxy <jumlah> <text|file>", "List proxy gratisan (HTTP, via ProxyScrape)", "Utility")
 
 
 def _fetch_proxies(count):
-    resp = requests.get("https://www.proxy-list.download/api/v1/get?type=http", timeout=15)
+    resp = requests.get(
+        "https://api.proxyscrape.com/v4/free-proxy-list/get",
+        params={
+            "request": "display_proxies",
+            "proxy_format": "protocolipport",
+            "format": "text",
+            "protocol": "http",
+        },
+        timeout=15,
+    )
     resp.raise_for_status()
     lines = [l.strip() for l in resp.text.splitlines() if l.strip()]
+    if not lines:
+        raise Exception("ProxyScrape lagi gak ada proxy live saat ini, coba lagi nanti.")
     return lines[:count]
 
 
@@ -23,9 +34,6 @@ async def freeproxy_handler(event):
     await event.edit("🌐 Ambil list proxy...")
     try:
         proxies = await asyncio.to_thread(_fetch_proxies, count)
-        if not proxies:
-            await event.edit("❌ Gak ada proxy yang kedapet.")
-            return
 
         if fmt == "file":
             buf = io.BytesIO("\n".join(proxies).encode())

@@ -56,7 +56,6 @@ import dadjoke
 import trivia
 import stopwatch
 import ytmp3
-import lenspin
 import createvps
 import freeproxy
 import upscale
