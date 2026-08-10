@@ -3,7 +3,7 @@ import asyncio
 from groq import Groq
 
 GROQ_API_KEY = os.environ["GROQ_API_KEY"]
-MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+MODEL = os.environ.get("GROQ_MODEL", "groq/compound-mini")
 
 _client = Groq(api_key=GROQ_API_KEY)
 
