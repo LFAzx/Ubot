@@ -65,6 +65,9 @@ import infousertt
 import infouseryt
 import infonewscyber
 import searchnews
+import randompass
+import mirror
+import chess
 import menu
 
 logging.basicConfig(level=logging.INFO)
