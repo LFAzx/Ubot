@@ -75,6 +75,14 @@ import tebak
 import rps
 import countdown
 import todo
+import usernamecheck
+import subdomain
+import dnsrecord
+import sslcheck
+import emailvalid
+import phoneinfo
+import headers_cmd
+import exifread_cmd
 import menu
 
 logging.basicConfig(level=logging.INFO)
