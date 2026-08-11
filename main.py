@@ -68,6 +68,13 @@ import searchnews
 import randompass
 import mirror
 import chess
+import breachcheck
+import tictac
+import emoji_cmd
+import tebak
+import rps
+import countdown
+import todo
 import menu
 
 logging.basicConfig(level=logging.INFO)

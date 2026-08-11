@@ -18,6 +18,7 @@ _init_db()
 register(f"{PREFIX}save <tag> <teks>", "Simpan catatan (reply juga bisa)", "Notes")
 register(f"{PREFIX}get <tag>", "Ambil catatan berdasarkan tag", "Notes")
 register(f"{PREFIX}list", "Lihat semua tag catatan", "Notes")
+register(f"{PREFIX}notelist", "Lihat semua catatan lengkap isinya", "Notes")
 
 
 @client.on(events.NewMessage(outgoing=True, pattern=rf"^\{PREFIX}save (\S+)(?:\s([\s\S]*))?$"))
@@ -62,3 +63,15 @@ async def list_handler(event):
         return
     tags = ", ".join(f"`{r[0]}`" for r in rows)
     await event.edit(f"📋 **Tag tersimpan:**\n{tags}")
+
+
+@client.on(events.NewMessage(outgoing=True, pattern=rf"^\{PREFIX}notelist$"))
+async def notelist_handler(event):
+    conn = sqlite3.connect(DB_PATH)
+    rows = conn.execute("SELECT tag, content FROM notes ORDER BY tag").fetchall()
+    conn.close()
+    if not rows:
+        await event.edit("📭 Belum ada catatan tersimpan.")
+        return
+    lines = [f"📌 **{tag}**\n{content}" for tag, content in rows]
+    await event.edit("📋 **Semua catatan:**\n\n" + "\n\n".join(lines))
