@@ -93,6 +93,15 @@ import archive_cmd
 import paste2text
 import geoip
 import leakcheck
+import color
+import qrbatch
+import markdown_cmd
+import eightball
+import wouldyourather
+import compliment_roast
+import whoisip
+import crtcheck
+import pomodoro
 import menu
 
 logging.basicConfig(level=logging.INFO)
