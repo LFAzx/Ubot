@@ -102,6 +102,11 @@ import compliment_roast
 import whoisip
 import crtcheck
 import pomodoro
+import portcheck
+import robotstxt
+import metatags
+import waybackurls
+import googledork
 import menu
 
 logging.basicConfig(level=logging.INFO)
