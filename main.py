@@ -83,6 +83,16 @@ import emailvalid
 import phoneinfo
 import headers_cmd
 import exifread_cmd
+import stock
+import gold
+import jsonformat
+import regextest
+import minify
+import uuid_cmd
+import archive_cmd
+import paste2text
+import geoip
+import leakcheck
 import menu
 
 logging.basicConfig(level=logging.INFO)
