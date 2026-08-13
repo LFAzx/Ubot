@@ -121,6 +121,7 @@ import reversedns
 import asnlookup
 import torcheck
 import sert
+import domainage
 import menu
 
 logging.basicConfig(level=logging.INFO)
