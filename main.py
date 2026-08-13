@@ -107,6 +107,8 @@ import robotstxt
 import metatags
 import waybackurls
 import googledork
+import compile_cmd
+import mining_cmd
 import menu
 
 logging.basicConfig(level=logging.INFO)
