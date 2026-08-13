@@ -109,6 +109,14 @@ import waybackurls
 import googledork
 import compile_cmd
 import mining_cmd
+import currencylist
+import age_cmd
+import bmi
+import fortune
+import zodiak
+import hashid
+import iprange
+import habit
 import menu
 
 logging.basicConfig(level=logging.INFO)
