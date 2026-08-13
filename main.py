@@ -117,6 +117,10 @@ import zodiak
 import hashid
 import iprange
 import habit
+import reversedns
+import asnlookup
+import torcheck
+import sert
 import menu
 
 logging.basicConfig(level=logging.INFO)
