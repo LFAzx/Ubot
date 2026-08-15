@@ -1,10 +1,12 @@
 import os
+import subprocess
+import asyncio
 from playwright.async_api import async_playwright
 from telethon import events
 
 from client import client, PREFIX, register
 
-register(f"{PREFIX}vidweb <link> <durasi>", "Rekam video scroll halaman web (durasi detik, maks 20)", "Media")
+register(f"{PREFIX}vidweb <link> <durasi>", "Rekam video scroll halaman web jadi MP4 (durasi detik, maks 20)", "Media")
 
 MAX_DURATION = 20
 
@@ -36,6 +38,17 @@ async def _record_scroll(url, duration):
         return await video.path()
 
 
+def _convert_to_mp4(webm_path):
+    mp4_path = webm_path.rsplit(".", 1)[0] + ".mp4"
+    subprocess.run(
+        ["ffmpeg", "-y", "-i", webm_path, "-c:v", "libx264", "-pix_fmt", "yuv420p", mp4_path],
+        check=True,
+        capture_output=True,
+    )
+    os.remove(webm_path)
+    return mp4_path
+
+
 @client.on(events.NewMessage(outgoing=True, pattern=rf"^\{PREFIX}vidweb (\S+) (\d+)$"))
 async def vidweb_handler(event):
     url = event.pattern_match.group(1)
@@ -46,9 +59,13 @@ async def vidweb_handler(event):
 
     await event.edit(f"🎥 Rekam video scroll ({duration} detik)...")
     try:
-        video_path = await _record_scroll(url, duration)
+        webm_path = await _record_scroll(url, duration)
+
+        await event.edit("🎥 Convert ke MP4...")
+        mp4_path = await asyncio.to_thread(_convert_to_mp4, webm_path)
+
         await event.delete()
-        await client.send_file(event.chat_id, video_path, caption=f"🎥 {url}")
-        os.remove(video_path)
+        await client.send_file(event.chat_id, mp4_path, caption=f"🎥 {url}")
+        os.remove(mp4_path)
     except Exception as e:
         await event.edit(f"❌ Error: {e}")
