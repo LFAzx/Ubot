@@ -122,6 +122,13 @@ import asnlookup
 import torcheck
 import sert
 import domainage
+import unitconvert
+import hangman
+import slotmachine
+import gifsearch
+import colorpalette
+import expense
+import vidweb
 import menu
 
 logging.basicConfig(level=logging.INFO)
