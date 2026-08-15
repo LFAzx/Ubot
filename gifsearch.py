@@ -5,15 +5,15 @@ from telethon import events
 
 from client import client, PREFIX, register
 
-register(f"{PREFIX}gifsearch <teks>", "Cari GIF dari Tenor", "Media")
+register(f"{PREFIX}gifsearch <teks>", "Cari GIF dari Klipy", "Media")
 
-TENOR_API_KEY = os.environ.get("TENOR_API_KEY")
+KLIPY_API_KEY = os.environ.get("KLIPY_API_KEY")
 
 
 def _search_gif(query):
     resp = requests.get(
-        "https://tenor.googleapis.com/v2/search",
-        params={"q": query, "key": TENOR_API_KEY, "limit": 1, "media_filter": "gif"},
+        "https://api.klipy.com/v1/search",
+        params={"q": query, "key": KLIPY_API_KEY, "limit": 1},
         timeout=15,
     )
     resp.raise_for_status()
@@ -26,8 +26,8 @@ def _search_gif(query):
 
 @client.on(events.NewMessage(outgoing=True, pattern=rf"^\{PREFIX}gifsearch (.+)$"))
 async def gifsearch_handler(event):
-    if not TENOR_API_KEY:
-        await event.edit("⚠️ TENOR_API_KEY belum di-set di environment variable Railway.")
+    if not KLIPY_API_KEY:
+        await event.edit("⚠️ KLIPY_API_KEY belum di-set di environment variable Railway.")
         return
 
     query = event.pattern_match.group(1)
